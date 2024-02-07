@@ -1,5 +1,5 @@
 # MACROEXCEL
-Script em VBA criado para utilizar um MACRO no Excel com o intuito de automatizar a busca dos pesos das ordens de venda no SAP.
+Script em VBA criado para utilizar um MACRO no Excel com o intuito de automatizar a busca dos pesos das ordens de venda no SAP.<br>
 Exemplo do funcionamento do SCRIPT.<br>
 Ele busca o valor da celular A4 (Numero da OV),<br>
 Com o SAP aberto na tela inicial, ele começa a operar abrindo a transação VA03,<br>
