@@ -1,0 +1,66 @@
+Private Sub CommandButton1_Click()
+'LER DADOS DA PLANILHA
+Dim OV As String
+Dim objExcel
+Dim objSheet, intRow, i
+
+Set objExcel = GetObject(, "Excel.Application")
+Set objSheet = objExcel.ActiveWorkbook.ActiveSheet
+
+
+For i = 4 To 24
+
+
+OV = Cells(i, 1).Value
+
+ ' Verificar se a célula está vazia
+        If IsEmpty(Cells(i, 1).Value) Then
+            MsgBox "Célula vazia encontrada. A busca foi finalizada."
+            ' Este comando pausa a execução do código
+            Exit Sub ' Este comando sai do procedimento
+        End If
+
+
+'CONECTAR COM O SAP
+
+If Not IsObject(App) Then
+   Set SapGuiAuto = GetObject("SAPGUI")
+   Set App = SapGuiAuto.GetScriptingEngine
+End If
+If Not IsObject(Connection) Then
+   Set Connection = App.Children(0)
+End If
+If Not IsObject(session) Then
+   Set session = Connection.Children(0)
+End If
+If IsObject(WScript) Then
+   WScript.ConnectObject session, "on"
+   WScript.ConnectObject App, "on"
+End If
+
+'ABRIR E REALIZAR A TRANSAÇÃO NO SAP
+
+session.findById("wnd[0]/tbar[0]/okcd").Text = "va03"
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[0]/usr/ctxtVBAK-VBELN").Text = OV
+session.findById("wnd[0]/usr/ctxtVBAK-VBELN").caretPosition = 9
+session.findById("wnd[0]").sendVKey 0
+
+'COLETAR CAMPOS DO SAP
+'Nome técino campo peso da ov BTGEW
+PESOOV = session.findById("wnd[0]/usr/tabsTAXI_TABSTRIP_OVERVIEW/tabpT\01/ssubSUBSCREEN_BODY:SAPMV45A:4402/ssubHEADER_FRAME:SAPMV45A:4440/txtRV45A-BTGEW").Text
+
+
+'PREENCHER CAMPOS DA PLANILHA
+
+Cells(i, 4).Value = PESOOV
+
+session.findById("wnd[0]/tbar[0]/btn[3]").press
+session.findById("wnd[0]/tbar[0]/btn[3]").press
+
+Next
+
+MsgBox ("Busca finalizada.")
+
+
+End Sub
